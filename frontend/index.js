@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 sectionFilter.appendChild(option);
             });
         };
-
+        
         // Function to export data to CSV
         const exportToCSV = (data) => {
             const headers = ['Rank', 'Roll Number', 'Name', 'Section', 'Total Solved', 'Easy', 'Medium', 'Hard', 'LeetCode URL'];
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             link.click();
             document.body.removeChild(link);
         };
-
+        
         // Function to render the leaderboard
         const renderLeaderboard = (sortedData) => {
             leaderboardBody.innerHTML = '';
@@ -100,6 +100,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         };
 
+        // Search functionality
+const searchBar = document.getElementById('search-bar');
+
+const searchLeaderboard = (query) => {
+    const lowerCaseQuery = query.toLowerCase();
+    const searchedData = filteredData.filter(student => 
+        student.name.toLowerCase().includes(lowerCaseQuery)
+    );
+    renderLeaderboard(searchedData);
+};
+
+// Event listener for search bar
+searchBar.addEventListener('input', (e) => {
+    searchLeaderboard(e.target.value);
+});
+
         // Initialize the page
         populateSectionFilter();
         renderLeaderboard(data);
@@ -147,3 +163,4 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Error fetching data:', error);
     }
 });
+
