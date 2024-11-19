@@ -23,4 +23,9 @@ tr:hover {
 #search-bar:focus {
     width: 300px;
 }
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
 

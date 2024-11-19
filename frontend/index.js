@@ -125,6 +125,71 @@ searchBar.addEventListener('input', (e) => {
             filterData(e.target.value);
         });
 
+        let sectionChart;
+
+        // Function to calculate section-wise data
+        const calculateSectionDistribution = (data) => {
+            const sectionCounts = data.reduce((acc, student) => {
+                const section = student.section || 'N/A';
+                acc[section] = (acc[section] || 0) + 1;
+                return acc;
+            }, {});
+            return sectionCounts;
+        };
+        
+        // Function to render the pie chart
+        const renderSectionChart = (data) => {
+            const sectionCounts = calculateSectionDistribution(data);
+            const sections = Object.keys(sectionCounts);
+            const counts = Object.values(sectionCounts);
+        
+            // Remove the old chart if it exists
+            if (sectionChart) sectionChart.destroy();
+        
+            // Create a new pie chart
+            const ctx = document.getElementById('sectionChart').getContext('2d');
+            sectionChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: sections,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: [
+                            '#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#2ecc71', '#e74c3c'
+                        ],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (tooltipItem) => {
+                                    const section = tooltipItem.label;
+                                    const value = tooltipItem.raw;
+                                    return `${section}: ${value} participants`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        };
+        
+        // Update chart when data changes
+        sectionFilter.addEventListener('change', () => {
+            renderSectionChart(filteredData); // Recalculate distribution for filtered data
+        });
+        
+        // Initial render
+        renderSectionChart(data);
+        
+
+
+
         document.getElementById('export-btn').addEventListener('click', () => {
             exportToCSV(filteredData); // Export only filtered data
         });
